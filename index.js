@@ -17,6 +17,10 @@ const mongoSanitize = require('express-mongo-sanitize')
 // database
 const connectDB = require('./src/db/connect')
 
+//router
+const authRouter = require('./src/routes/authRoutes')
+
+//middleware
 const notFoundMiddleware = require('./src/middleware/not-found')
 const errorHandlerMiddleware = require('./src/middleware/error-handler')
 
@@ -30,10 +34,17 @@ app.use(xss())
 
 app.use(mongoSanitize())
 
+app.use(morgan('tiny'))
 app.use(express.json())
 app.use(cookieParser(process.env.JWT_SECRET))
 app.use(express.static('./public'))
 app.use(fileUpload())
+
+app.get('/', (req, res) => {
+  res.send('e-commerce api')
+})
+
+app.use('/api/v1/auth', authRouter)
 
 app.use(notFoundMiddleware)
 app.use(errorHandlerMiddleware)
